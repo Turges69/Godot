@@ -1,7 +1,9 @@
 extends CharacterBody3D
 
 @export_category("Variables")
-@export var speed: float
+@export var maxSpeed: float
+@export var acceleration: float
+@export var friction: float
 @export var jumpStrength:float
 var direction: Vector3
 @export_category("Objects")
@@ -13,18 +15,27 @@ func _onready() -> void:
 
 
 func _physics_process(delta: float) -> void:
-	velocity = delta * speed * moveDir()
-	move_and_slide()
+	velocity += acceleration * delta * moveDir()
+	velocity = velocity.clampf(-maxSpeed, maxSpeed)
+	if(moveDir().length() == 0):
+		velocity -= friction * delta * velocity
 	
+	if(!is_on_floor()):
+		velocity+= get_gravity() * delta
+	if(Input.is_action_just_pressed("Jump") and is_on_floor()):
+		velocity.y = jumpStrength
+	move_and_slide()
+
 func _process(delta: float) -> void:
 	orientation.global_rotation = Vector3(0 , cam.global_rotation.y, 0)
-	
+
 func moveDir() -> Vector3:
 	var forward = orientation.transform.basis.z
+	var right = orientation.transform.basis.x
 	var horizontalInput = Input.get_axis("Move Left", "Move Right")
 	var verticalInput = Input.get_axis("Move Backward", "Move Forward")
-	direction = Vector3(-horizontalInput, 0, -verticalInput)
-	if(direction.length() != 0):
-		direction = direction.direction_to(forward)
+	direction = -forward* verticalInput + right* horizontalInput
 	return direction.normalized()
-	
+
+func _input(input) -> void:
+	pass
