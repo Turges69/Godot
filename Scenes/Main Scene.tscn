@@ -1,0 +1,64 @@
+[gd_scene load_steps=9 format=3 uid="uid://bj4kahuhnpqk"]
+
+[ext_resource type="Texture2D" uid="uid://c6bnohkauwfm2" path="res://Squares.jpg" id="1_tn1qc"]
+[ext_resource type="Script" uid="uid://dpkcbpsgp3sji" path="res://Scripts/Player.gd" id="2_ke1vn"]
+[ext_resource type="Script" uid="uid://l2ijrw6yt5rx" path="res://Scripts/FPS Cam.gd" id="3_ke1vn"]
+
+[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_v87v2"]
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_pilj3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_156p1"]
+albedo_color = Color(0.32544088, 0.3254409, 0.32544088, 1)
+albedo_texture = ExtResource("1_tn1qc")
+uv1_scale = Vector3(40, 40, 40)
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_7enb7"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_4y6ly"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="Area3D"]
+depth = 2.3
+polygon = PackedVector2Array(1.07, 0, -1.02, 0, -0.3963585, 1.9710481, 1.1640028, 1.8941169)
+margin = 0.001
+
+[node name="Terrain" type="StaticBody3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Terrain"]
+shape = SubResource("WorldBoundaryShape3D_v87v2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Terrain"]
+transform = Transform3D(58.46, 0, 0, 0, 58.46, 0, 0, 0, 58.46, 0, 0, 0)
+mesh = SubResource("PlaneMesh_pilj3")
+surface_material_override/0 = SubResource("StandardMaterial3D_156p1")
+
+[node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("cam", "orientation")]
+script = ExtResource("2_ke1vn")
+speed = 50.48
+jumpStrength = 5.0
+cam = NodePath("Camera3D")
+orientation = NodePath("Orientation")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98166054, 0)
+shape = SubResource("CapsuleShape3D_7enb7")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="CharacterBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.98166054, 0)
+mesh = SubResource("CapsuleMesh_4y6ly")
+
+[node name="Camera3D" type="Camera3D" parent="CharacterBody3D"]
+process_priority = -1
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6255249, 0)
+script = ExtResource("3_ke1vn")
+
+[node name="Orientation" type="Node3D" parent="CharacterBody3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -0.22324988, 0.97476125, 0, -0.97476125, -0.22324988, 0, 0, 0)
+light_energy = 2.979
+shadow_enabled = true
