@@ -3,7 +3,7 @@ extends CharacterBody3D
 @export_category("Variables")
 @export var maxSpeed: float
 @export var acceleration: float
-@export var friction: float
+@export var drag: float
 @export var jumpStrength:float
 var direction: Vector3
 @export_category("Objects")
@@ -17,8 +17,7 @@ func _onready() -> void:
 func _physics_process(delta: float) -> void:
 	velocity += acceleration * delta * moveDir()
 	velocity = velocity.clampf(-maxSpeed, maxSpeed)
-	if(moveDir().length() == 0):
-		velocity -= friction * delta * velocity
+	velocity *= (1/(1+drag*delta))
 	
 	if(!is_on_floor()):
 		velocity+= get_gravity() * delta

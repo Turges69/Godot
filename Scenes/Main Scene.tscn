@@ -39,8 +39,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_156p1")
 [node name="CharacterBody3D" type="CharacterBody3D" parent="." node_paths=PackedStringArray("cam", "orientation")]
 script = ExtResource("2_ke1vn")
 maxSpeed = 100.0
-acceleration = 10.0
-friction = 5.0
+acceleration = 50.0
+drag = 5.0
 jumpStrength = 20.0
 cam = NodePath("Camera3D")
 orientation = NodePath("Orientation")
